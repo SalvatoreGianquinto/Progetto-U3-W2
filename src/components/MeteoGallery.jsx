@@ -31,6 +31,7 @@ const MeteoGallery = () => {
 
   useEffect(() => {
     setIsLoading(true)
+    setIsLoading(false)
 
     // Fetch per ogni città
     cities.forEach((city) => {
@@ -52,8 +53,6 @@ const MeteoGallery = () => {
         .catch((err) => {
           console.log("Errore nel fetch del meteo:", err)
           setIsError(true)
-        })
-        .finally(() => {
           setIsLoading(false)
         })
     })
@@ -72,7 +71,7 @@ const MeteoGallery = () => {
         <p>Qui puoi trovare le notizie del meteo di tutto il mondo</p>
       </Alert>
 
-      <Container className="mt-4">
+      <Container fluid className="mt-4">
         <h1 className="mb-4">Meteo delle Città più gettonate</h1>
 
         {isLoading ? (
