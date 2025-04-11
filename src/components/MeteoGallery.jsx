@@ -1,33 +1,45 @@
 import React, { useState, useEffect } from "react"
-import { Card, Col, Row, Image, Container, Button } from "react-bootstrap"
+import {
+  Card,
+  Col,
+  Row,
+  Image,
+  Container,
+  Button,
+  Spinner,
+  Alert,
+} from "react-bootstrap"
 import { Link } from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
-import { Alert } from "react-bootstrap"
 
 const MeteoGallery = () => {
-  const [cities] = useState(["Rome", "Tokyo", "London", "Paris"])
+  const [cities] = useState(["Rome", "Tokyo", "London", "New York"])
   const [weatherData, setWeatherData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
   const apiKeyWeather = "089951b9af8656a0e0fd05f84db66d2c"
 
-  // Oggetto con le immagini fisse per ogni città
   const cityImages = {
     Rome: "https://images.pexels.com/photos/12496258/pexels-photo-12496258.jpeg?auto=compress&cs=tinysrgb&w=600", // immagine di Roma
     Tokyo:
       "https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=600", // immagine di Tokyo
     London:
       "https://images.pexels.com/photos/672532/pexels-photo-672532.jpeg?auto=compress&cs=tinysrgb&w=600", // immagine di Londra
-    Paris:
-      "https://images.pexels.com/photos/1308940/pexels-photo-1308940.jpeg?auto=compress&cs=tinysrgb&w=600", // immagine di Parigi
+    "New York":
+      "https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=600", // immagine di Parigi
   }
 
   useEffect(() => {
+    setIsLoading(true)
+
+    // Fetch per ogni città
     cities.forEach((city) => {
       const weatherURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKeyWeather}&units=metric`
 
       fetch(weatherURL)
         .then((response) => {
           if (response.ok) {
-            return response.json() // Risposta corretta, la converte in JSON
+            return response.json()
           } else {
             throw new Error(
               "Errore nella fetch del meteo: " + response.statusText
@@ -35,55 +47,71 @@ const MeteoGallery = () => {
           }
         })
         .then((data) => {
-          // Aggiungi i dati meteo al nostro stato
           setWeatherData((prevData) => [...prevData, data])
         })
         .catch((err) => {
           console.log("Errore nel fetch del meteo:", err)
+          setIsError(true)
+        })
+        .finally(() => {
+          setIsLoading(false)
         })
     })
   }, [cities])
 
   return (
     <>
+      {isError && (
+        <Alert variant="danger" className="text-center m-0">
+          Errore nel recupero dei dati meteo. Riprova più tardi.
+        </Alert>
+      )}
+
       <Alert className="text-center m-0">
         <h1>Benvenuti in EPIMeteo</h1>
         <p>Qui puoi trovare le notizie del meteo di tutto il mondo</p>
       </Alert>
+
       <Container className="mt-4">
         <h1 className="mb-4">Meteo delle Città più gettonate</h1>
-        <Row>
-          {weatherData.map((data, index) => (
-            <Col md={3} mb={5} key={index} className="g-3">
-              <Card>
-                {/* Mostra l'immagine fissa per ogni città */}
-                {cityImages[data.name] && (
-                  <Image
-                    src={cityImages[data.name]} // Usa l'immagine fissa associata alla città
-                    className="card-img-top"
-                    alt={data.name}
-                    fluid
-                  />
-                )}
-                <Card.Body>
-                  <Card.Title>{data.name}</Card.Title>
-                  <Card.Text>
-                    {" "}
-                    <i className="bi bi-thermometer-half"></i> Temperatura:{" "}
-                    {data.main.temp}°C
-                  </Card.Text>
-                  <Card.Text>
-                    <i className="bi bi-clouds-fill"></i>{" "}
-                    {data.weather[0].description}
-                  </Card.Text>
-                  <Link to={`/city/${data.name}`} className="btn btn-primary">
-                    Dettagli
-                  </Link>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+
+        {isLoading ? (
+          <div className="d-flex justify-content-center mt-4">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        ) : (
+          <Row>
+            {weatherData.map((data, index) => (
+              <Col md={3} mb={5} key={index} className="g-3">
+                <Card>
+                  {cityImages[data.name] && (
+                    <Image
+                      src={cityImages[data.name]}
+                      className="card-img-top"
+                      alt={data.name}
+                      fluid
+                    />
+                  )}
+                  <Card.Body>
+                    <Card.Title>{data.name}</Card.Title>
+                    <Card.Text>
+                      <i className="bi bi-thermometer-half"></i> Temperatura:{" "}
+                      {data.main.temp}°C
+                    </Card.Text>
+                    <Card.Text>
+                      <i className="bi bi-clouds-fill"></i>{" "}
+                      {data.weather[0].description}
+                    </Card.Text>
+                    <Link to={`/city/${data.name}`} className="btn btn-primary">
+                      Dettagli
+                    </Link>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
+
         <h1 className="mt-5">Notizie d'Italia e del Mondo</h1>
         <Row className="mt-5">
           <Col md={6} className="mb-4">

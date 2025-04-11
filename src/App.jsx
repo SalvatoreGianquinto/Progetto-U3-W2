@@ -15,7 +15,6 @@ const App = () => {
       <BrowserRouter>
         <MyNav setCityName={setCityName} />
 
-        {/* Contenuto principale che cresce per riempire lo spazio */}
         <div className="flex-grow-1">
           <Routes>
             <Route path="/" element={<MeteoGallery />} />
@@ -25,7 +24,6 @@ const App = () => {
           </Routes>
         </div>
 
-        {/* Footer sempre in fondo */}
         <MyFooter />
       </BrowserRouter>
     </div>

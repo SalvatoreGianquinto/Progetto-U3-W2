@@ -8,13 +8,12 @@ import Navbar from "react-bootstrap/Navbar"
 
 const MyNav = ({ setCityName }) => {
   const [searchQuery, setSearchQuery] = useState("")
-  const navigate = useNavigate() // Usa useNavigate per navigare tra le pagine
+  const navigate = useNavigate()
 
-  // Funzione per gestire il submit del modulo di ricerca
   const handleSearchSubmit = (event) => {
-    event.preventDefault() // Evita che la pagina venga ricaricata
-    setCityName(searchQuery) // Passa il nome della città alla funzione che aggiorna lo stato
-    navigate(`/city/${searchQuery}`) // Reindirizza alla pagina della città usando navigate
+    event.preventDefault()
+    setCityName(searchQuery)
+    navigate(`/city/${searchQuery}`)
   }
 
   return (

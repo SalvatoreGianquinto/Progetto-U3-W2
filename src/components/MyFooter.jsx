@@ -6,7 +6,6 @@ const MyFooter = () => {
     <footer className="bg-warning text-white py-4 mt-1">
       <Container>
         <Row>
-          {/* Sezione "Informazioni" */}
           <Col md={4}>
             <h5 className="text-dark">Informazioni</h5>
             <ListGroup variant="flush">
