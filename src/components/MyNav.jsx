@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import Button from "react-bootstrap/Button"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"
@@ -18,9 +18,11 @@ const MyNav = ({ setCityName }) => {
   }
 
   return (
-    <Navbar bg="info" data-bs-theme="light">
+    <Navbar expand="lg" bg="warning" data-bs-theme="light" className="p-3">
       <Container fluid>
-        <Navbar.Brand href="/">EPIMeteo</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">
+          EPIMeteo
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -28,7 +30,15 @@ const MyNav = ({ setCityName }) => {
             style={{ maxHeight: "100px" }}
             navbarScroll
           >
-            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link as={Link} to="/" active>
+              Home
+            </Nav.Link>
+            <Nav.Link as={Link} to="/news/1" active>
+              Italia
+            </Nav.Link>
+            <Nav.Link as={Link} to="/news/2" active>
+              Mondo
+            </Nav.Link>
           </Nav>
           <Form className="d-flex" onSubmit={handleSearchSubmit}>
             <Form.Control
@@ -37,7 +47,7 @@ const MyNav = ({ setCityName }) => {
               className="me-2"
               aria-label="Search"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)} // Gestisce il cambio nel campo di ricerca
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Button variant="outline-secondary" type="submit">
               Cerca

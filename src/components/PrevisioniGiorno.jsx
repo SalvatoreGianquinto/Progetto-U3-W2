@@ -1,11 +1,10 @@
-// PrevisioniGiorni.jsx
 import React, { useState, useEffect } from "react"
 import { Card, Row, Col } from "react-bootstrap"
 
 const PrevisioniGiorni = ({ city }) => {
   const [forecastData, setForecastData] = useState([])
   const apiKeyWeather = "089951b9af8656a0e0fd05f84db66d2c" // Usa la tua API Key
-  const forecastURL = `https://api.openweathermap.org/data/2.5/forecast/daily?q=${city}&cnt=5&appid=${apiKeyWeather}&units=metric`
+  const forecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKeyWeather}&units=metric`
 
   useEffect(() => {
     // Fetch per ottenere le previsioni meteo
@@ -20,19 +19,19 @@ const PrevisioniGiorni = ({ city }) => {
         }
       })
       .then((data) => {
-        setForecastData(data.list)
+        setForecastData(data.list.slice(0, 5)) // Prendi solo le prime 5 previsioni (ogni 3 ore)
       })
       .catch((err) => {
         console.log("Errore nel fetch delle previsioni:", err)
       })
-  }, [city])
+  }, [city]) // Effettua il fetch ogni volta che cambia la città
 
   return (
-    <div className="mt-4">
-      <h3>Previsioni a 5 Giorni per {city}</h3>
-      <Row>
+    <div className="mt-4 g-3">
+      <h3>Previsioni orarie per {city}</h3>
+      <Row className="d-flex justify-content-center">
         {forecastData.map((forecast, index) => (
-          <Col md={2} key={index}>
+          <Col md={2} key={index} className="text-center">
             <Card>
               <Card.Body>
                 <Card.Title>
@@ -43,8 +42,9 @@ const PrevisioniGiorni = ({ city }) => {
                   {forecast.weather[0].description} {/* Descrizione meteo */}
                 </Card.Text>
                 <Card.Text>
-                  Temp: {forecast.temp.day}°C {/* Temperatura diurna */}
+                  Temp: {forecast.main.temp}°C {/* Temperatura */}
                 </Card.Text>
+                <Card.Text>Orario: {forecast.dt_txt}</Card.Text>
               </Card.Body>
             </Card>
           </Col>
